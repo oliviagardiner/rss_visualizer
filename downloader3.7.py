@@ -5,9 +5,12 @@ from urllib.error import HTTPError
 from datetime import datetime
 from pathlib import Path
 import json
+import os
 
-json_filename = 'rss_feeds.json'
-gen_path = 'tmp/rss_downloads'
+abs_path = os.path.dirname(__file__)
+
+json_filename = os.path.join(abs_path, 'rss_feeds.json')
+gen_path = os.path.join(abs_path, 'rss_downloads')
 
 Path(gen_path).mkdir(parents=True, exist_ok=True)
 

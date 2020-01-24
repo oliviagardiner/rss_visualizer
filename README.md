@@ -1,6 +1,6 @@
 # Requirements
 
-* Python 3 installed
+* Python 3.* installed
 
 These instructions assume you are using Linux.
 

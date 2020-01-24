@@ -20,7 +20,7 @@ def convertJsonToDict():
     with open(json_filename) as json_file:
         data = json.load(json_file)
         for key in data['feeds']:
-            urls[key] = data['feeds'][key]
+            urls[key] = data['feeds'].get(key, '').get('domain', '')
     return urls
 
 def getDateFormatted():
@@ -39,7 +39,7 @@ def logError(err, url):
     f.close()
 
 # Some servers will reject your request if the User-Agent header is not set
-# so we make a 2nd attempt if the first try throws a 403 error code
+# so we make a 2nd attempt if the first try throws a 403 (Forbidden) error code
 
 def downloadUrls(d =dict()):
     for key, val in d.items():

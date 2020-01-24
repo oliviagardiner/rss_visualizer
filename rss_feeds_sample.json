@@ -1,5 +1,12 @@
 {
     "feeds": {
-        "key": "https://sample.com/feed"
+        "UNIQUE_NAME": {
+            "domain": "https://sample.com/feed",
+            "fields": {
+                "title": "TITLE",
+                "category": "CATEGORY",
+                "description": "DESCRIPTION"
+            }
+        }
     }
 }

@@ -6,12 +6,31 @@ These instructions assume you are using Linux.
 
 # Creating the source file
 
-Define your key-value pairs of a name and an RSS feed url in a json, and name it `rss_feeds.json`
+Define your RSS feeds url in a json file, and name it `rss_feeds.json`
 
 ```
 {
     "feeds": {
-        "key": "https://sample.com/feed"
+        "UNIQUE_NAME": {
+            "domain": "https://sample.com/feed",
+            "fields": {
+                "title": "TITLE",
+                "category": "CATEGORY",
+                "description": "DESCRIPTION"
+            }
+        }
+    }
+}
+```
+
+The `UNIQUE_NAME` has to be a unique key as it will be also used to generate the file names for the downloaded RSS feeds. Everything that is defined with capital letters only, must be set for each feed, by you (as well as the domain url). The `fields` define the name of the XML tags used for the following elements: title, category, description. There is a high chance that they will be called "title", "category" and "description" by default, but you should check a manually downloaded sample XML to see what tags are nested under `rss / channel / item`. If you don't define any of the fields, the values will default to their own keys. For example:
+
+```
+{
+    "feeds": {
+        "new_york_times_top_stories": {
+            "domain": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"
+        }
     }
 }
 ```
@@ -21,11 +40,6 @@ Define your key-value pairs of a name and an RSS feed url in a json, and name it
 In the terminal, type `crontab -e` to edit your crontab. After selecting the editor (in this case nano) add the following line:
 
 ```
-#Borrowed from anacron
-SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-#End borrowed from anacron
-
 0,30 * * * * python3 /home/USERNAME/path/to/file/rss_parser/downloader3.7.py
 
 ```

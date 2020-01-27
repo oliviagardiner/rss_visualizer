@@ -1,9 +1,8 @@
 import sys
 import os
 import json
-import glob
 import random
-from datetime import date, timedelta
+from datetime import date
 from pathlib import Path
 from wordcloud import WordCloud, STOPWORDS 
 from xml.dom import minidom
@@ -74,17 +73,6 @@ class RssWordcloudGenerator(RssDownloader):
                             text.add(child.firstChild.data.strip())
 
         return ' '.join(text)
-
-    def get_file_list(self, key):
-        """Returns a list of file paths that match the requirements (uid and timestamp).
-        Returns
-        ---
-        list
-        """
-        pattern = self.today + '-*_' + key + '_rss.xml'
-        pattern = os.path.join(self.download_filepath, pattern)
-        
-        return glob.glob(pattern)
 
     def custom_stopwords_from_file(self):
         """Creates a list of unique words that will be omitted from the analysis.

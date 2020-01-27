@@ -1,11 +1,10 @@
-#!/usr/bin/python3.7
-
 import urllib.request
 from urllib.error import HTTPError
 from datetime import datetime, date
 from pathlib import Path
 import json
 import os
+import glob
 
 ABS_PATH = os.path.dirname(__file__)
 
@@ -27,7 +26,7 @@ class RssDownloader:
         self.download_filepath = os.path.join(self.abs_path, self.download_filepath + '/' + self.today)
         Path(self.download_filepath).mkdir(parents=True, exist_ok=True)
 
-    def convert_json_to_dict(self):
+    def get_config(self):
         """Converts the json config file for the rss feeds into a uid-url dictionary.
 
         Returns
@@ -59,12 +58,23 @@ class RssDownloader:
 
     def rss_file_path_for(self, key):
         return self.download_filepath  + '/' + self.format_date() + '_' + key + '_rss.xml'
+    
+    def get_file_list(self, key):
+        """Returns a list of file paths that match the requirements (uid and timestamp).
+        Returns
+        ---
+        list
+        """
+        pattern = self.today + '-*_' + key + '_rss.xml'
+        pattern = os.path.join(self.download_filepath, pattern)
+        
+        return glob.glob(pattern)
 
     def run(self):
         """Some servers will reject your request if the User-Agent header is not set
         so we make a 2nd attempt if the first try throws a 403 (Forbidden) error code.
         """
-        urls = self.convert_json_to_dict()
+        urls = self.get_config()
 
         for key, val in urls.items():
             try:

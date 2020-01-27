@@ -16,23 +16,28 @@ Path(gen_path).mkdir(parents=True, exist_ok=True)
 
 def convertJsonToDict():
     global json_filename
+
     urls = dict()
     with open(json_filename) as json_file:
         data = json.load(json_file)
         for key in data['feeds']:
             urls[key] = data['feeds'].get(key, '').get('domain', '')
+
     return urls
 
 def getDateFormatted():
     now = datetime.now()
+
     return now.strftime('%Y-%m-%d-%H%M%S')
 
 def getFilePath(key):
     global gen_path
+
     return gen_path + '/' + getDateFormatted() + '_' + key + '_rss.xml'
 
 def logError(err, url):
     global gen_path
+    
     msg =  getDateFormatted() + ' Error trying to download file from url: [' + url + '] ' + str(err.code) + ': ' + str(err.reason)
     f = open(gen_path + '/log.txt', 'a+')
     f.write(msg + '\n')
@@ -41,8 +46,10 @@ def logError(err, url):
 # Some servers will reject your request if the User-Agent header is not set
 # so we make a 2nd attempt if the first try throws a 403 (Forbidden) error code
 
-def downloadUrls(d =dict()):
-    for key, val in d.items():
+def downloadUrls():
+    urls = convertJsonToDict()
+
+    for key, val in urls.items():
         try:
             urllib.request.urlretrieve(val, getFilePath(key))
         except HTTPError as err:
@@ -56,5 +63,4 @@ def downloadUrls(d =dict()):
             else:   
                 logError(err, val)
 
-urls = convertJsonToDict()
-downloadUrls(urls)
+downloadUrls()

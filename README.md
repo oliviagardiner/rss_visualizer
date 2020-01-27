@@ -1,4 +1,4 @@
-# RSS word cloud parser
+# RSS Visualizer
 
 ## What's this?
 

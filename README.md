@@ -27,7 +27,7 @@ Define your RSS feeds url in a json file, and name it `rss_feeds.json`
 ```
 {
     "feeds": {
-        "UNIQUE_NAME": {
+        "UID": {
             "domain": "https://sample.com/feed",
             "fields": {
                 "title": "TITLE",
@@ -39,7 +39,7 @@ Define your RSS feeds url in a json file, and name it `rss_feeds.json`
 }
 ```
 
-The `UNIQUE_NAME` has to be a unique key as it will be also used to generate the file names for the downloaded RSS feeds. Everything that is defined with capital letters only, must be set for each feed, by you (as well as the domain url). The `fields` define the name of the XML tags used for the following elements: title, category, description. There is a high chance that they will be called "title", "category" and "description" by default, but you should check a manually downloaded sample XML to see what tags are nested under `rss / channel / item`. If you don't define any of the fields, the values will default to their own keys. For example:
+The `UID` has to be a unique key as it will be also used to generate the file names for the downloaded RSS feeds. Everything that is defined with capital letters only, must be set for each feed, by you (as well as the domain url). The `fields` define the name of the XML tags used for the following elements: title, category, description. There is a high chance that they will be called "title", "category" and "description" by default, but you should check a manually downloaded sample XML to see what tags are nested under `rss / channel / item`. If you don't define any of the fields, the values will default to their own keys. For example:
 
 ```
 {
@@ -60,8 +60,8 @@ If your RSS feeds are **not in English**, you can define your own list of stopwo
 In the terminal, type `crontab -e` to edit your crontab. After selecting the editor (in this case nano) add the following line:
 
 ```
-0 * * * * python3 /home/USERNAME/path/to/file/rss_parser/downloader.py
-30 * * * * python3 /home/USERNAME/path/to/file/rss_parser/analytics.py
+0 * * * * python3 /home/USERNAME/path/to/file/rss_parser/sched_downloader.py
+30 * * * * python3 /home/USERNAME/path/to/file/rss_parser/sched_analytics.py
 
 ```
 

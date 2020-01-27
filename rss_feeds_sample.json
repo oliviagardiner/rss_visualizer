@@ -1,6 +1,6 @@
 {
     "feeds": {
-        "UNIQUE_NAME": {
+        "UID": {
             "domain": "https://sample.com/feed",
             "fields": {
                 "title": "TITLE",

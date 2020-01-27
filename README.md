@@ -4,7 +4,10 @@
 
 These are simple scripts that you can add to a scheduler daemon (eg. cron) to automatically pull RSS feeds from news sites of your preference. An RSS feed is a list of articles that are structured in a specific way, using a markup language called XML. Why are we downloading all these summaries? This repository allows you to statistically analyze these feeds and also lets you create word cloud visualizations for specific days to compare the news coverage of different media outlets.
 
-Plan: compare these to Twitter Trends API.
+Plans:
+
+* Compare these to Twitter Trends API.
+* Create a script that deletes old feeds after they have been analyzed to save hard drive space.
 
 ## Requirements
 
@@ -13,7 +16,6 @@ Plan: compare these to Twitter Trends API.
 These instructions assume you are using Linux. The following python modules have to be installed:
 
 ```
-pip install matplotlib
 pip install pandas
 pip install wordcloud
 ```
@@ -58,8 +60,8 @@ If your RSS feeds are **not in English**, you can define your own list of stopwo
 In the terminal, type `crontab -e` to edit your crontab. After selecting the editor (in this case nano) add the following line:
 
 ```
-0 * * * * python3 /home/USERNAME/path/to/file/rss_parser/downloader3.7.py
-30 * * * * python3 /home/USERNAME/path/to/file/rss_parser/rss_wordcloud_generator.py
+0 * * * * python3 /home/USERNAME/path/to/file/rss_parser/downloader.py
+30 * * * * python3 /home/USERNAME/path/to/file/rss_parser/analytics.py
 
 ```
 
@@ -67,6 +69,8 @@ The 0 at the beginning means that your script will execute once every hour as lo
 
 `crontab: installing new crontab`
 
-The files need to be executable.
+The files need to be executable. You don't need to use `python3` in the command (`python` is enough) in case there is only one version of python installed on your server, or python3 is set as default.
 
-`chmod +x downloader3.7.py`
+## Good to know
+
+Expect this script to generate roughly 1-4Mb of data per RSS feed every day (assuming the server is running continously all day).

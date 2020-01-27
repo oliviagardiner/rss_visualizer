@@ -1,5 +1,3 @@
-#!/usr/bin/python3.7
-
 # import pandas as pd 
 import os
 import json
@@ -32,18 +30,24 @@ def convertJsonToDict():
 
     return urls, fields
 
-def getTextByTag(tag, key, day = None):
-    filelist = getFilelist(key, day)
-    text = []
+def getTextByTag(tag, key, day = None, allow_duplicates = False):
+    if (allow_duplicates == True):
+        text = []
+    else:
+        text = set()
 
+    filelist = getFilelist(key, day)
     for filename in filelist:
         doc = minidom.parse(filename)
         items = doc.getElementsByTagName('item')
 
         for elem in items:
             for child in elem.childNodes:
-                if (child.nodeType == Node.ELEMENT_NODE and child.tagName == tag):
-                    text.append(child.firstChild.data)
+                if (child.nodeType == Node.ELEMENT_NODE and child.tagName == tag and child.hasChildNodes() == True):
+                    if (allow_duplicates == True):
+                        text.append(child.firstChild.data.strip())
+                    else:
+                        text.add(child.firstChild.data.strip())
 
     return ' '.join(text)
 
@@ -74,14 +78,14 @@ def customStopwordsFromFile():
 
     return set(sw_list)
 
-def createWordcloud(tag, key, day = None, custom_stopwords = False, color = 'cividis', bg = '#1b1b1b'):
+def createWordcloud(tag, key, day = None, custom_stopwords = False, color = 'cividis', bg = '#1b1b1b', allow_duplicates = False):
     global wordc_path
 
     if (day == None):
         now = date.today()
         day = now.strftime('%Y-%m-%d')
 
-    txt = getTextByTag(tag, key, day)
+    txt = getTextByTag(tag, key, day, allow_duplicates)
 
     if (len(txt) > 0):
         if (custom_stopwords == True):
@@ -99,13 +103,11 @@ def createWordcloud(tag, key, day = None, custom_stopwords = False, color = 'civ
             min_font_size = 10).generate(txt)
         wordcloud.to_file(pathname)
 
-def generateDailyWordclouds(tag):
+def generateDailyWordclouds(tag, allow_duplicates = False):
     urls, fields = convertJsonToDict()
     today = date.today()
     # yesterday = today - timedelta(days=1)
     for key in urls.keys():
         if (key in fields and fields[key] != None):
             tag = fields[key].get(tag, tag)
-        createWordcloud(tag, key, day = today.strftime('%Y-%m-%d'), custom_stopwords = True, color ='plasma', bg = 'white')
-
-generateDailyWordclouds('title')
+        createWordcloud(tag, key, day = today.strftime('%Y-%m-%d'), custom_stopwords = True, color ='cividis', bg = 'white', allow_duplicates = allow_duplicates)

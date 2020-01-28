@@ -6,8 +6,8 @@ import time
 abs_path = os.path.dirname(__file__)
 sys.path.append(abs_path)
 
-from rss_wordcloud_generator import RssWordcloudGenerator
-from rss_csv_parser import RssCsvParser
+from src.rss_wordcloud_generator import RssWordcloudGenerator
+from src.rss_csv_parser import RssCsvParser
 
 # Generating word clouds
 

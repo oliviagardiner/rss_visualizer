@@ -5,7 +5,7 @@ import os
 abs_path = os.path.dirname(__file__)
 sys.path.append(abs_path)
 
-from rss_downloader import RssDownloader
+from src.rss_downloader import RssDownloader
 
 # Schedules RSS feed downloader
 dl = RssDownloader()

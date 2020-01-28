@@ -3,29 +3,20 @@ import os
 import pandas
 import xml.etree.ElementTree as ET
 from datetime import date
-from pathlib import Path
-from rss_downloader import RssDownloader
+from src.rss_downloader import RssDownloader
 
 ABS_PATH = os.path.dirname(__file__)
 
 class RssCsvParser(RssDownloader):
     data_keys = ['key', 'guid', 'pubDate', 'title', 'description', 'category', 'link']
 
-    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_feeds.json', download_dirname = 'rss_downloads', abs_path = None, log_dirname = 'rss_logs', logger_name = __name__, stat_dirname = 'daily_statistics', csv_filename = 'data.csv'):
+    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_feeds.json', download_dirname = 'rss_downloads', abs_path = None, log_dirname = 'rss_logs', logger_name = __name__, stat_dirname = 'rss_statistics', csv_filename = 'data.csv'):
         RssDownloader.__init__(self, today = today, json_filename = json_filename, download_dirname = download_dirname, abs_path = abs_path, log_dirname = log_dirname, logger_name = logger_name)
 
-        self.stat_filepath = stat_dirname
-        self.csv_filepath = 'data.csv'
-        self.init_rss_analytics_paths()
-
-    def init_rss_analytics_paths(self):
-        """Changes the path of the statistics directory to absolute paths. Creates the directory if it doesn't exist.
-        """
-        self.stat_filepath = os.path.join(self.abs_path, self.stat_filepath)
-        self.csv_filepath = os.path.join(self.stat_filepath, self.today + '_' + self.csv_filepath)
-        Path(self.stat_filepath).mkdir(parents=True, exist_ok=True)
+        self.stat_filepath = self.convert_to_abs_path(stat_dirname, is_dir = True)
+        self.csv_filepath = self.convert_to_abs_path(stat_dirname + '/' + self.today + '_' + csv_filename)
     
-    def parse_xml_to_dict(self, key):
+    def parse_xml_to_dataframe(self, key):
         """Reads all the xml files generated on the specific day and parses them into a pandas dataframe object.
         
         Returns
@@ -68,7 +59,7 @@ class RssCsvParser(RssDownloader):
         urls = self.get_config()
         df = pandas.DataFrame(columns = self.data_keys)
         for key in urls.keys():
-            df_dataset = self.parse_xml_to_dict(key)
+            df_dataset = self.parse_xml_to_dataframe(key)
             df = df.append(df_dataset, ignore_index = True)
         self.save_data_to_csv(df)
         self.logger.info('CSV data parsing finished, time elapsed: %s'%(self.get_time_elapsed()))

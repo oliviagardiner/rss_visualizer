@@ -12,6 +12,7 @@ from rss_downloader import RssDownloader
 ABS_PATH = os.path.dirname(__file__)
 
 class RssWordcloudGenerator(RssDownloader):
+    colors = ['viridis', 'plasma', 'inferno', 'magma', 'cividis', 'summer', 'winter', 'cool', 'copper', 'twilight', 'rainbow']
 
     def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_feeds.json', download_dirname = 'rss_downloads', abs_path = None, tag = '', wordcloud_filepath = 'daily_wordclouds', stopwords_filename = 'custom_stopwords', custom_stopwords = True, allow_duplicates = False):
         if abs_path is None:
@@ -117,8 +118,7 @@ class RssWordcloudGenerator(RssDownloader):
         ---
         string
         """
-        colors = ['viridis', 'plasma', 'inferno', 'magma', 'cividis', 'Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds', 'YlOrBr', 'YlOrRd', 'OrRd', 'PuRd', 'RdPu', 'BuPu', 'GnBu', 'PuBu', 'YlGnBu', 'PuBuGn', 'BuGn', 'YlGn','binary', 'gist_yarg', 'gist_gray', 'gray', 'bone', 'pink', 'spring', 'summer', 'autumn', 'winter', 'cool', 'Wistia', 'hot', 'afmhot', 'gist_heat', 'copper']
-        return random.choice(colors)
+        return random.choice(self.colors)
 
     def run(self):
         color = self.get_random_colormap_color()

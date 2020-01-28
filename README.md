@@ -4,6 +4,13 @@
 
 These are simple scripts that you can add to a scheduler daemon (eg. cron) to automatically pull RSS feeds from news sites of your preference. An RSS feed is a list of articles that are structured in a specific way, using a markup language called XML. Why are we downloading all these summaries? This repository allows you to statistically analyze these feeds and also lets you create word cloud visualizations for specific days to compare the news coverage of different media outlets.
 
+The following will be generated:
+* XML files (downloaded raw RSS feeds)
+* CSV data files (parsed RSS feeds)
+* CSV statistics files
+* Wordcloud image files (.jpg)
+* log files (.txt)
+
 Plans:
 
 * Compare these to Twitter Trends API.

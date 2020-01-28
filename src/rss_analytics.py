@@ -4,32 +4,19 @@ import pandas
 import xml.etree.ElementTree as ET
 from datetime import date, datetime, timedelta
 from pathlib import Path
-from rss_downloader import RssDownloader
+from src.rss_processor import RssProcessor
 
 ABS_PATH = os.path.dirname(__file__)
 
-class RssAnalytics(RssDownloader):
+class RssAnalytics(RssProcessor):
     
-    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_feeds.json', download_dirname = 'rss_downloads', abs_path = None,logfile = 'rss_logs.txt', stat_dirname = 'daily_statistics', csv_filename = 'data.csv'):
-        if abs_path is None:
-            abs_path = ABS_PATH
-        self.abs_path = abs_path
-        self.today = today
-        self.config_filepath = json_filename
-        self.download_filepath = download_dirname
-        self.logging_filepath = logfile
-        self.init_rss_downloader_paths()
+    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_feeds.json', download_dirname = 'rss_downloads', abs_path = None,log_dirname = 'rss_logs', logger_name = __name__, tag = '', stat_dirname = 'rss_statistics', csv_filename = 'data.csv'):
+        RssProcessor.__init__(self, today = today, json_filename = json_filename, download_dirname = download_dirname, abs_path = abs_path, log_dirname = log_dirname, logger_name = logger_name)
 
-        self.stat_filepath = stat_dirname
-        self.csv_filepath = 'data.csv'
-        self.init_rss_analytics_paths()
-
-    def init_rss_analytics_paths(self):
-        """Changes the path of the statistics directory to absolute paths. Creates the directory if it doesn't exist.
-        """
-        self.stat_filepath = os.path.join(self.abs_path, self.stat_filepath)
-        self.csv_filepath = os.path.join(self.stat_filepath, self.today + '_' + self.csv_filepath)
-        Path(self.stat_filepath).mkdir(parents=True, exist_ok=True)
+        self.stat_filepath = self.convert_to_abs_path(stat_dirname, is_dir = True)
+        self.csv_filepath = self.convert_to_abs_path(stat_dirname + '/' + self.today + '_' + csv_filename)
     
     def run(self):
-        data = pandas.read_csv(self.csv_filepath, index_col = 'pkey', header = 0, sep = ';')
+        pass
+        # data = pandas.read_csv(self.csv_filepath, index_col = 'pkey', header = 0, sep = ';')
+        # WIP

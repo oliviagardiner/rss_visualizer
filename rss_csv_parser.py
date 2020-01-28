@@ -11,14 +11,8 @@ ABS_PATH = os.path.dirname(__file__)
 class RssCsvParser(RssDownloader):
     data_keys = ['key', 'guid', 'pubDate', 'title', 'description', 'category', 'link']
 
-    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_feeds.json', download_dirname = 'rss_downloads', abs_path = None, stat_dirname = 'daily_statistics', csv_filename = 'data.csv'):
-        if abs_path is None:
-            abs_path = ABS_PATH
-        self.abs_path = abs_path
-        self.today = today
-        self.config_filepath = json_filename
-        self.download_filepath = download_dirname
-        self.init_rss_downloader_paths()
+    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_feeds.json', download_dirname = 'rss_downloads', abs_path = None, log_dirname = 'rss_logs', logger_name = __name__, stat_dirname = 'daily_statistics', csv_filename = 'data.csv'):
+        RssDownloader.__init__(self, today = today, json_filename = json_filename, download_dirname = download_dirname, abs_path = abs_path, log_dirname = log_dirname, logger_name = logger_name)
 
         self.stat_filepath = stat_dirname
         self.csv_filepath = 'data.csv'
@@ -33,6 +27,7 @@ class RssCsvParser(RssDownloader):
     
     def parse_xml_to_dict(self, key):
         """Reads all the xml files generated on the specific day and parses them into a pandas dataframe object.
+        
         Returns
         ---
         dataframe (object)
@@ -63,7 +58,7 @@ class RssCsvParser(RssDownloader):
         return df
 
     def save_data_to_csv(self, df):
-        """Saves the dataframe to a csv file.
+        """Saves the pandas dataframe to a csv file.
         """
         df.index.name = 'pkey'
         df = df.drop_duplicates(subset = ['guid']) # debatable
@@ -76,3 +71,4 @@ class RssCsvParser(RssDownloader):
             df_dataset = self.parse_xml_to_dict(key)
             df = df.append(df_dataset, ignore_index = True)
         self.save_data_to_csv(df)
+        self.logger.info('CSV data parsing finished, time elapsed: %s'%(self.get_time_elapsed()))

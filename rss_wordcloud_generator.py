@@ -1,4 +1,4 @@
-import sys
+
 import os
 import json
 import random
@@ -14,14 +14,8 @@ ABS_PATH = os.path.dirname(__file__)
 class RssWordcloudGenerator(RssDownloader):
     colors = ['viridis', 'plasma', 'inferno', 'magma', 'cividis', 'summer', 'winter', 'cool', 'copper', 'twilight', 'rainbow']
 
-    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_feeds.json', download_dirname = 'rss_downloads', abs_path = None, tag = '', wordcloud_filepath = 'daily_wordclouds', stopwords_filename = 'custom_stopwords', custom_stopwords = True, allow_duplicates = False):
-        if abs_path is None:
-            abs_path = ABS_PATH
-        self.abs_path = abs_path
-        self.today = today
-        self.config_filepath = json_filename
-        self.download_filepath = download_dirname
-        self.init_rss_downloader_paths()
+    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_feeds.json', download_dirname = 'rss_downloads', abs_path = None,log_dirname = 'rss_logs', logger_name = __name__, tag = '', wordcloud_filepath = 'daily_wordclouds', stopwords_filename = 'custom_stopwords', custom_stopwords = True, allow_duplicates = False):
+        RssDownloader.__init__(self, today = today, json_filename = json_filename, download_dirname = download_dirname, abs_path = abs_path, log_dirname = log_dirname, logger_name = logger_name)
 
         self.tag = tag
         self.allow_duplicates = allow_duplicates
@@ -39,6 +33,7 @@ class RssWordcloudGenerator(RssDownloader):
 
     def get_config(self):
         """Creates a uid-url dictionary and a uid-fields dictionary from the json config.
+
         Returns
         ---
         lists (urls, fields)
@@ -54,6 +49,12 @@ class RssWordcloudGenerator(RssDownloader):
         return urls, fields
 
     def get_text_by_tag(self, tag, key):
+        """Collects all text from a specified tag per key per day and returns it as one long string.
+
+        Returns
+        ---
+        string
+        """
         if self.allow_duplicates is True:
             text = []
         else:
@@ -77,6 +78,7 @@ class RssWordcloudGenerator(RssDownloader):
 
     def custom_stopwords_from_file(self):
         """Creates a list of unique words that will be omitted from the analysis.
+
         Returns
         ---
         set
@@ -94,6 +96,8 @@ class RssWordcloudGenerator(RssDownloader):
         return set(sw_list)
 
     def create_wordcloud(self, tag, key, color = 'inferno'):
+        """If there is text to process, this method creates a wordcloud and saves it to a .jpg.
+        """
         txt = self.get_text_by_tag(tag, key)
 
         if (len(txt) > 0):
@@ -104,16 +108,20 @@ class RssWordcloudGenerator(RssDownloader):
             
             pathname = os.path.join(self.wordcloud_filepath, self.today + '_' + key + '_' + tag + '.jpg')
 
-            wordcloud = WordCloud(width = 800, height = 800,
-                max_words = 100,
-                background_color = 'white',
-                colormap = color,
-                stopwords = stopwords,
-                min_font_size = 10).generate(txt)
-            wordcloud.to_file(pathname)
+            try:
+                wordcloud = WordCloud(width = 800, height = 800,
+                    max_words = 100,
+                    background_color = 'white',
+                    colormap = color,
+                    stopwords = stopwords,
+                    min_font_size = 10).generate(txt)
+                wordcloud.to_file(pathname)
+            except:
+                pass
 
     def get_random_colormap_color(self):
         """Returns a random matplotlib compatible colormap string.
+
         Returns
         ---
         string
@@ -129,4 +137,5 @@ class RssWordcloudGenerator(RssDownloader):
             else:
                 tag = self.tag
             self.create_wordcloud(tag, key, color)
+        self.logger.info('Wordcloud generating finished for tag "%s", time elapsed: %s'%(tag, self.get_time_elapsed()))
 

@@ -73,7 +73,7 @@ The files need to be executable. You don't need to use `python3` in the command 
 
 ## Good to know
 
-Expect this script to generate roughly 3-7Mb of data per RSS feed every day (assuming the server is running continously all day). There is a feature in the works that will delete XML files that have already been processed, so we only have to account for the long-term storage of the CSV data tables (until we load it into a database) and the generated wordcloud image files.
+Expect this script to generate roughly 1-3Mb of data per RSS feed every day (assuming the server is running continously all day). There is a feature in the works that will delete XML files that have already been processed, so we only have to account for the long-term storage of the CSV data tables (until we load it into a database) and the generated wordcloud image files.
 
 ## Issues
 

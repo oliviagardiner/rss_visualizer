@@ -5,26 +5,40 @@ from pathlib import Path
 import json
 import os
 import glob
+import logging
+import time
 
 ABS_PATH = os.path.dirname(__file__)
 
 class RssDownloader:
-
-    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_feeds.json', download_dirname = 'rss_downloads', abs_path = None):
+    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_feeds.json', download_dirname = 'rss_downloads', abs_path = None, log_dirname = 'rss_logs', logger_name = __name__):
         if abs_path is None:
             abs_path = ABS_PATH
         self.abs_path = abs_path
         self.today = today
         self.config_filepath = json_filename
         self.download_filepath = download_dirname
+        self.logging_filepath = log_dirname
+        self.logger_name = logger_name
         self.init_rss_downloader_paths()
+        self.setup_log()
 
     def init_rss_downloader_paths(self):
         """Changes the path of the download directory and the json config to absolute paths. Creates the download directory if it doesn't exist.
         """
         self.config_filepath = os.path.join(self.abs_path, self.config_filepath)
         self.download_filepath = os.path.join(self.abs_path, self.download_filepath + '/' + self.today)
+        self.logging_filepath = os.path.join(self.abs_path, self.logging_filepath)
         Path(self.download_filepath).mkdir(parents=True, exist_ok=True)
+        Path(self.logging_filepath).mkdir(parents=True, exist_ok=True)
+
+    def setup_log(self):
+        """Creates a logging object that can be used by child classes.
+        """
+        self.start = time.time()
+        logging.basicConfig(filename = self.logging_filepath + '/' + self.today + '_rss_log.txt', level = logging.DEBUG, format = '%(asctime)s %(name)s %(levelname)s %(message)s', datefmt ='%Y-%m-%d %I:%M:%S ')
+        self.logger = logging.getLogger(self.logger_name)
+        self.logger.info('Module started')
 
     def get_config(self):
         """Converts the json config file for the rss feeds into a uid-url dictionary.
@@ -42,25 +56,26 @@ class RssDownloader:
 
     def format_date(self):
         """Returns the formatted string of the current time as YYYY-mm-dd-HHiiss.
+
         Returns
         ---
         string
         """
         now = datetime.now()
         return now.strftime('%Y-%m-%d-%H%M%S')
-    
-    def log_error(self, err, url):
-        """Saves the error message and timestamp in log.txt in the downloads folder."""
-        msg =  self.format_date() + ' Error trying to download file from url: [' + url + '] ' + str(err.code) + ': ' + str(err.reason)
-        f = open(self.download_filepath + '/log.txt', 'a+')
-        f.write(msg + '\n')
-        f.close()
 
     def rss_file_path_for(self, key):
+        """Returns the XML file path by date and key.
+        
+        Returns
+        ---
+        string
+        """
         return self.download_filepath  + '/' + self.format_date() + '_' + key + '_rss.xml'
     
     def get_file_list(self, key):
         """Returns a list of file paths that match the requirements (uid and timestamp).
+
         Returns
         ---
         list
@@ -69,6 +84,14 @@ class RssDownloader:
         pattern = os.path.join(self.download_filepath, pattern)
         
         return glob.glob(pattern)
+
+    def get_time_elapsed(self):
+        """Gets the running time elapsed since the object was initiated in seconds.
+        Returns
+        ---
+        string
+        """
+        return str(time.time() - self.start) + 's'
 
     def run(self):
         """Some servers will reject your request if the User-Agent header is not set
@@ -86,6 +109,9 @@ class RssDownloader:
                         opener.addheader('User-Agent', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0')
                         opener.retrieve(val, self.rss_file_path_for(key))
                     except HTTPError as err:
-                        self.log_error(err, val)
-                else:   
-                    self.log_error(err, val)
+                        self.logger.warning('Error trying to download file from url: [' + val + '] ' + str(err.code) + ': ' + str(err.reason))
+                else:
+                    self.logger.warning('Error trying to download file from url: [' + val + '] ' + str(err.code) + ': ' + str(err.reason))
+        self.logger.info('RSS feed download finished, time elapsed: ' + self.get_time_elapsed())
+        
+

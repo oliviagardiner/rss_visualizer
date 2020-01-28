@@ -7,5 +7,6 @@ sys.path.append(abs_path)
 
 from rss_downloader import RssDownloader
 
+# Schedules RSS feed downloader
 dl = RssDownloader()
 dl.run()

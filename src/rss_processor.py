@@ -66,10 +66,10 @@ class RssProcessor:
         except ValueError as e:
             self.logger.warning('The config file is NOT a valid json - %s'%(e))
             return False
-        self.logger.info('The config file not a valid json')
+        self.logger.info('The config file is a valid json')
         return True
 
-    def get_config(self, domains_only = True):
+    def get_config(self, urls_only = True):
         """Converts the json config file for the rss feeds into a uid-url dictionary.
 
         Returns
@@ -82,9 +82,9 @@ class RssProcessor:
             with open(self.config_filepath) as json_file:
                 data = json.load(json_file)
                 for key in data['feeds']:
-                    urls[key] = data['feeds'].get(key, '').get('domain', '')
+                    urls[key] = data['feeds'].get(key, '').get('url', '')
                     fields[key] = data['feeds'].get(key, '').get('fields', None)
-        if domains_only is True:
+        if urls_only is True:
             return urls
         else:
             return urls, fields

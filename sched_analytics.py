@@ -11,12 +11,8 @@ from src.rss_csv_parser import RssCsvParser
 
 # Generating word clouds
 
-gen_title = RssWordcloudGenerator(tag = 'title')
-gen_title.run()
-gen_description = RssWordcloudGenerator(tag = 'description')
-gen_description.run()
-gen_category = RssWordcloudGenerator(tag = 'category', allow_duplicates = True)
-gen_category.run()
+gen = RssWordcloudGenerator()
+gen.run()
 
 # Parsing the XML data into CSV
 

@@ -1,7 +1,8 @@
 {
     "feeds": {
         "UID": {
-            "domain": "https://sample.com/feed",
+            "url": "https://sample.com/feed",
+            "name": "NAME",
             "fields": {
                 "title": "TITLE",
                 "category": "CATEGORY",

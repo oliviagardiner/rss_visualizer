@@ -8,12 +8,12 @@ from src.rss_processor import RssProcessor
 ABS_PATH = os.path.dirname(__file__)
 
 class RssWordcloudGenerator(RssProcessor):
+    tags = ['title', 'description', 'category']
     colors = ['viridis', 'plasma', 'inferno', 'magma', 'cividis', 'summer', 'winter', 'cool', 'copper', 'twilight', 'rainbow']
 
-    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_feeds.json', download_dirname = 'rss_downloads', abs_path = None,log_dirname = 'rss_logs', logger_name = __name__, tag = '', wordcloud_filepath = 'rss_wordclouds', stopwords_filename = 'custom_stopwords', custom_stopwords = True, allow_duplicates = False):
+    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_feeds.json', download_dirname = 'rss_downloads', abs_path = None,log_dirname = 'rss_logs', logger_name = __name__, wordcloud_filepath = 'rss_wordclouds', stopwords_filename = 'custom_stopwords', custom_stopwords = True, allow_duplicates = False):
         RssProcessor.__init__(self, today = today, json_filename = json_filename, download_dirname = download_dirname, abs_path = abs_path, log_dirname = log_dirname, logger_name = logger_name)
 
-        self.tag = tag
         self.allow_duplicates = allow_duplicates
         self.custom_stopwords = custom_stopwords
         self.wordcloud_filepath = self.convert_to_abs_path(wordcloud_filepath + '/' + self.today, is_dir = True)
@@ -72,13 +72,13 @@ class RssWordcloudGenerator(RssProcessor):
         return random.choice(self.colors)
 
     def run(self):
-        color = self.get_random_colormap_color()
-        urls, fields = self.get_config(domains_only = False)
-        for key in urls.keys():
-            if (key in fields and fields[key] != None):
-                tag = fields[key].get(self.tag, self.tag)
-            else:
-                tag = self.tag
-            self.create_wordcloud(tag, key, color)
-        self.logger.info('Wordcloud generating finished for tag "%s", time elapsed: %s'%(tag, self.get_time_elapsed()))
+        for tag in self.tags:
+            color = self.get_random_colormap_color()
+            urls, fields = self.get_config(urls_only = False)
+            for key in urls.keys():
+                if (key in fields and fields[key] != None):
+                    tag = fields[key].get(tag, tag)
+                self.create_wordcloud(tag, key, color)
+            self.logger.info('Wordcloud generating finished for tag "%s", time elapsed: %s'%(tag, self.get_time_elapsed()))
+        self.logger.info('Module finished, time elapsed: %s'%(self.get_time_elapsed()))
 

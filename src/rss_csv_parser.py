@@ -31,10 +31,10 @@ class RssCsvParser(RssDownloader):
             tree = ET.parse(filename)
 
             for node in tree.findall('.//item'):
-                row = {'key': key, 'guid': None, 'category': []}
+                row = {'key': key, 'guid': None, 'pubDate': '', 'title': '', 'description': '', 'category': [], 'link': ''}
                 for child in node.iter():
                     if child.tag in self.data_keys:
-                        value = child.text or None
+                        value = self.clean_html(child.text) or None
                         if value != None:
                             value = value.strip()
                         if child.tag is 'category':

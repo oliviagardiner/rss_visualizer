@@ -3,6 +3,7 @@ import os
 import glob
 import logging
 import time
+import re
 from datetime import datetime, date
 from pathlib import Path
 from xml.dom import minidom
@@ -33,6 +34,12 @@ class RssProcessor:
         self.logging_filepath = self.convert_to_abs_path(self.logging_filepath, is_dir = True)
     
     def convert_to_abs_path(self, path, is_dir = False):
+        """Returns the absolute path of a filename, if the path is a directory, this will also attempt to create it.
+
+        Returns
+        ---
+        string
+        """
         p = os.path.join(self.abs_path, self.gen_dir + path)
         if is_dir is True:
             Path(p).mkdir(parents = True, exist_ok = True)
@@ -47,6 +54,12 @@ class RssProcessor:
         self.logger.info('Module started')
 
     def is_config_valid(self):
+        """Checks if the config file is a valid json and logs the result.
+
+        Returns
+        ---
+        boolean
+        """
         try:
             with open(self.config_filepath) as json_file:
                 json.load(json_file)
@@ -75,6 +88,20 @@ class RssProcessor:
             return urls
         else:
             return urls, fields
+
+    def clean_html(self, text):
+        """This will remove everything that is enclosed in a html tag. It was handy to clean up the XMLs because some of the RSS feeds I used for testing incorrectly enclosed HTML inside certain XML tags.
+
+        Returns
+        ---
+        string
+        """
+        cl = re.compile('<.*?>')
+        cl_text = re.sub(cl, '', str(text))
+        cl_text = cl_text.strip()
+        cl_text = cl_text.replace('\n', '')
+        cl_text = cl_text.replace('\t', '')
+        return cl_text
 
     def format_date(self):
         """Returns the formatted string of the current time as YYYY-mm-dd-HHiiss.
@@ -109,6 +136,7 @@ class RssProcessor:
 
     def get_time_elapsed(self):
         """Gets the running time elapsed since the object was initiated in seconds.
+
         Returns
         ---
         string
@@ -136,10 +164,11 @@ class RssProcessor:
             for elem in items:
                 for child in elem.childNodes:
                     if (child.nodeType == Node.ELEMENT_NODE and child.tagName == tag and child.hasChildNodes() == True):
+                        value = self.clean_html(child.firstChild.data) or ''
                         if allow_duplicates is True:
-                            text.append(child.firstChild.data.strip())
+                            text.append(value)
                         else:
-                            text.add(child.firstChild.data.strip())
+                            text.add(value)
 
         return ' '.join(text)
 

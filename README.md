@@ -4,17 +4,14 @@
 
 These are simple scripts that you can add to a scheduler daemon (eg. cron) to automatically pull RSS feeds from news sites of your preference. An RSS feed is a list of articles that are structured in a specific way, using a markup language called XML. Why are we downloading all these summaries? This repository allows you to statistically analyze these feeds and also lets you create word cloud visualizations for specific days to compare the news coverage of different media outlets.
 
+You can install this script on your own server and study the RSS feeds of your choice. Be aware that this script generates roughly 1-3Mb of data per RSS feed every day (assuming the server is running continously all day).
+
 The following will be generated:
-* XML files (downloaded raw RSS feeds)
-* CSV data files (parsed RSS feeds)
-* CSV statistics files
+* XML files (the downloaded raw RSS feeds)
+* CSV data files (the parsed RSS feeds)
+* CSV statistics files (for caching purposes so we don't have to run the statistics on all the collected data every time we need to access it)
 * Wordcloud image files (.jpg)
 * log files (.txt)
-
-Plans:
-
-* Compare these to Twitter Trends API.
-* Create a script that deletes old feeds after they have been analyzed to save hard drive space.
 
 ## Requirements
 
@@ -27,9 +24,9 @@ pip install pandas
 pip install wordcloud
 ```
 
-## Creating the source file
+## Creating the config file
 
-Define your RSS feeds url in a json file, and name it `rss_feeds.json`
+Define your RSS feeds url in a json file, and name it `rss_config.json`. You can do this easily by editing the `rss_config_sample.json` and renaming it.
 
 ```
 {
@@ -80,10 +77,6 @@ The 0 at the beginning means that your script will execute once every hour as lo
 `crontab: installing new crontab`
 
 The files need to be executable. You don't need to use `python3` in the command (`python` is enough) in case there is only one version of python installed on your server, or python3 is set as default.
-
-## Good to know
-
-Expect this script to generate roughly 1-3Mb of data per RSS feed every day (assuming the server is running continously all day). There is a feature in the works that will delete XML files that have already been processed, so we only have to account for the long-term storage of the CSV data tables (until we load it into a database) and the generated wordcloud image files.
 
 ## Issues
 

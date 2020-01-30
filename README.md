@@ -58,6 +58,15 @@ The `UID` has to be a unique key as it will be also used to generate the file na
 }
 ```
 
+### Additional settings
+
+There are optional settings in this file as well that let you fine-tune the script and provide some flexibility.
+
+* `colormaps`: a list of (matplotlib compatible) color maps you would like the wordcloud generator to use
+* `enclosing_tag_name`: a string, it's usually `item` in RSS feeds but if you are using the script on different XMLs, this lets you override the enclosing tag
+* `tags`: a list of strings that determine which child tags of the enclosing tag will be used for the analysis
+* `xml_cleanup`: a boolean that controls whether the XMLs that have already been processed should be deleted to save disc space (if set to false, the raw XMLs will instead be compressed and archived)
+
 ## Eliminate words
 
 If your RSS feeds are **not in English**, you can define your own list of stopwords to eliminate certain words from the final processing. Use the *custom_stopwords* file for this purpose. It doesn't need to have a file extension, and it's important that each line represents a unique word or expression. Stopwords are case insensitive.

@@ -8,12 +8,11 @@ from src.rss_processor import RssProcessor
 ABS_PATH = os.path.dirname(__file__)
 
 class RssWordcloudGenerator(RssProcessor):
-    tags = ['title', 'description', 'category']
-    colors = ['viridis', 'plasma', 'inferno', 'magma', 'cividis', 'summer', 'winter', 'cool', 'copper', 'twilight', 'rainbow']
-
-    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_feeds.json', download_dirname = 'rss_downloads', abs_path = None,log_dirname = 'rss_logs', logger_name = __name__, wordcloud_filepath = 'rss_wordclouds', stopwords_filename = 'custom_stopwords', custom_stopwords = True, allow_duplicates = False):
+    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_config.json', download_dirname = 'rss_downloads', abs_path = None,log_dirname = 'rss_logs', logger_name = __name__, wordcloud_filepath = 'rss_wordclouds', stopwords_filename = 'custom_stopwords', custom_stopwords = True, allow_duplicates = False):
         RssProcessor.__init__(self, today = today, json_filename = json_filename, download_dirname = download_dirname, abs_path = abs_path, log_dirname = log_dirname, logger_name = logger_name)
 
+        self.colors = self.get_config_settings('colormaps') if isinstance(self.get_config_settings('colormaps'), list) else ['viridis', 'plasma', 'inferno', 'magma', 'cividis', 'summer', 'winter', 'cool', 'copper', 'twilight', 'rainbow']
+        self.tags = self.get_config_settings('tags') if isinstance(self.get_config_settings('tags'), list) else ['title', 'description', 'category']
         self.allow_duplicates = allow_duplicates
         self.custom_stopwords = custom_stopwords
         self.wordcloud_filepath = self.convert_to_abs_path(wordcloud_filepath + '/' + self.today, is_dir = True)

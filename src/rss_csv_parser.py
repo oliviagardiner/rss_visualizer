@@ -10,7 +10,7 @@ ABS_PATH = os.path.dirname(__file__)
 class RssCsvParser(RssDownloader):
     data_keys = ['key', 'guid', 'pubDate', 'title', 'description', 'category', 'link']
 
-    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_feeds.json', download_dirname = 'rss_downloads', abs_path = None, log_dirname = 'rss_logs', logger_name = __name__, stat_dirname = 'rss_statistics', csv_filename = 'data.csv'):
+    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_config.json', download_dirname = 'rss_downloads', abs_path = None, log_dirname = 'rss_logs', logger_name = __name__, stat_dirname = 'rss_statistics', csv_filename = 'data.csv'):
         RssDownloader.__init__(self, today = today, json_filename = json_filename, download_dirname = download_dirname, abs_path = abs_path, log_dirname = log_dirname, logger_name = logger_name)
 
         self.stat_filepath = self.convert_to_abs_path(stat_dirname, is_dir = True)
@@ -29,8 +29,9 @@ class RssCsvParser(RssDownloader):
         
         for filename in filelist:
             tree = ET.parse(filename)
+            enclosing_tag = self.get_config_settings('enclosing_tag_name') if isinstance(self.get_config_settings('enclosing_tag_name'), str) else 'item'
 
-            for node in tree.findall('.//item'):
+            for node in tree.findall('.//' + enclosing_tag):
                 row = {'key': key, 'guid': None, 'pubDate': '', 'title': '', 'description': '', 'category': [], 'link': ''}
                 for child in node.iter():
                     if child.tag in self.data_keys:

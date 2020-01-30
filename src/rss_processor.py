@@ -14,7 +14,7 @@ ABS_PATH = os.path.dirname(__file__)
 class RssProcessor:
     gen_dir = '../generated/'
 
-    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_feeds.json', download_dirname = 'rss_downloads', abs_path = None, log_dirname = 'rss_logs', logger_name = __name__):
+    def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_config.json', download_dirname = 'rss_downloads', abs_path = None, log_dirname = 'rss_logs', logger_name = __name__):
         if abs_path is None:
             abs_path = ABS_PATH
         self.abs_path = abs_path
@@ -88,6 +88,18 @@ class RssProcessor:
             return urls
         else:
             return urls, fields
+    
+    def get_config_settings(self, key):
+        """Extracts the value of a specific setting from the json config, returns None if not found.
+
+        Returns
+        ---
+        mixed
+        """
+        if self.is_config_valid() is True:
+            with open(self.config_filepath) as json_file:
+                data = json.load(json_file)
+                return data['settings'][key] or None
 
     def clean_html(self, text):
         """This will remove everything that is enclosed in a html tag. It was handy to clean up the XMLs because some of the RSS feeds I used for testing incorrectly enclosed HTML inside certain XML tags.
@@ -159,7 +171,8 @@ class RssProcessor:
         
         for filename in filelist:
             doc = minidom.parse(filename)
-            items = doc.getElementsByTagName('item')
+            enclosing_tag = self.get_config_settings('enclosing_tag_name') if isinstance(self.get_config_settings('enclosing_tag_name'), str) else 'item'
+            items = doc.getElementsByTagName(enclosing_tag)
 
             for elem in items:
                 for child in elem.childNodes:

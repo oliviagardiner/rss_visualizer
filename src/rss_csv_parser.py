@@ -38,7 +38,7 @@ class RssCsvParser(RssDownloader):
                         value = self.clean_html(child.text) or None
                         if value != None:
                             value = value.strip()
-                        if child.tag is 'category':
+                        if child.tag == 'category':
                             row[child.tag].append(value)
                         else:
                             row[child.tag] = value

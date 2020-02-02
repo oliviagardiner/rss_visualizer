@@ -1,9 +1,10 @@
-import json
-import os
 import glob
+import json
 import logging
-import time
+import os
 import re
+import shutil
+import time
 from datetime import datetime, date
 from pathlib import Path
 from xml.dom import minidom
@@ -32,6 +33,7 @@ class RssProcessor:
         self.config_filepath = os.path.abspath(os.path.join(self.abs_path, '../' + self.config_filepath))
         self.download_filepath = self.convert_to_abs_path(self.download_filepath + '/' + self.today, is_dir = True)
         self.logging_filepath = self.convert_to_abs_path(self.logging_filepath, is_dir = True)
+        self.archive_filepath = self.convert_to_abs_path('rss_archive', is_dir = True)
     
     def convert_to_abs_path(self, path, is_dir = False):
         """Returns the absolute path of a filename, if the path is a directory, this will also attempt to create it.
@@ -185,7 +187,36 @@ class RssProcessor:
 
         return ' '.join(text)
 
+    def archive_folder(self, path, day = None):
+        """Compresses a folder's contents.
+        """
+        day = day + '-' if day != None else ''
+        target = self.archive_filepath + '/' + day + 'rss_archive'
+        shutil.make_archive(target, 'zip', path)
+    
+    def archive_day(self, day):
+        """Archives the raw XML files of a certain day and then removes the original uncompressed folder and its contents.
+        """
+        xml_cleanup = self.get_config_settings('xml_cleanup') if isinstance(self.get_config_settings('xml_cleanup'), bool) else False
+        if xml_cleanup is True:
+            path = os.path.abspath(self.download_filepath + '/../' + day)
+            if os.path.isdir(path):
+                self.logger.info('Target path is an existing directory, archiving and removing: ' + path)
+                try:
+                    self.archive_folder(path, day)
+                    self.logger.info('Successfully archived: ' + path)
+                except:
+                    self.logger.warning('Error while trying to archive path: ' + path)
+
+                try:
+                    shutil.rmtree(path)
+                    self.logger.info('Successfully deleted: ' + path)
+                except:
+                    self.logger.warning('Error while trying to delete path: ' + path)
+            else:
+                self.logger.info('Target path is not an existing directory, nothing to archive: ' + path)
+        else:
+            self.logger.info('XML cleanup is disabled in the settings')
+
     def run(self):
         self.logger.info('Module finished, time elapsed: ' + self.get_time_elapsed())
-        
-

@@ -65,7 +65,7 @@ There are optional settings in this file as well that let you fine-tune the scri
 * `colormaps`: a list of (matplotlib compatible) color maps you would like the wordcloud generator to use
 * `enclosing_tag_name`: a string, it's usually `item` in RSS feeds but if you are using the script on different XMLs, this lets you override the enclosing tag
 * `tags`: a list of strings that determine which child tags of the enclosing tag will be used for the analysis
-* `xml_cleanup`: a boolean that controls whether the XMLs that have already been processed should be deleted to save disc space (if set to false, the raw XMLs will instead be compressed and archived)
+* `xml_cleanup`: a boolean that controls whether the XMLs that have already been processed should be cleaned up to save disc space, if set to `true`, the raw XMLs of the previous day will be compressed and the originals will be deleted
 
 ## Eliminate words
 

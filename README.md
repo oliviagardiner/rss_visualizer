@@ -88,6 +88,14 @@ The 0 at the beginning means that your script will execute once every hour as lo
 
 The files need to be executable. You don't need to use `python3` in the command (`python` is enough) in case there is only one version of python installed on your server, or python3 is set as default.
 
+## Wordclouds
+
+To (re)generate wordclouds for a specific day, run:
+
+```
+generate_wordcloud_for_day.py -d YYYY-MM-DD
+```
+
 ## Issues
 
 This analysis currently does not aggregate words that share the same oblique stem, therefore it works less well for languages that use suffixation.

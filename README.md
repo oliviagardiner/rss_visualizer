@@ -4,10 +4,10 @@
 
 These are simple scripts that you can add to a scheduler daemon (eg. cron) to automatically pull RSS feeds from news sites of your preference. An RSS feed is a list of articles that are structured in a specific way, using a markup language called XML. Why are we downloading all these summaries? This repository allows you to statistically analyze these feeds and also lets you create word cloud visualizations for specific days to compare the news coverage of different media outlets.
 
-![hvg](https://github.com/oliviaisarobot/rss_visualizer/edit/master/preview/2020-05-18_hvg_title.jpg)
-![index](https://github.com/oliviaisarobot/rss_visualizer/edit/master/preview/2020-05-18_index_title.jpg)
-![origo](https://github.com/oliviaisarobot/rss_visualizer/edit/master/preview/2020-05-18_origo_title.jpg)
-![pesti_sracok](https://github.com/oliviaisarobot/rss_visualizer/edit/master/preview/2020-05-18_pesti_sracok_title.jpg)
+![hvg](https://github.com/oliviaisarobot/rss_visualizer/master/preview/2020-05-18_hvg_title.jpg)
+![index](https://github.com/oliviaisarobot/rss_visualizer/master/preview/2020-05-18_index_title.jpg)
+![origo](https://github.com/oliviaisarobot/rss_visualizer/master/preview/2020-05-18_origo_title.jpg)
+![pesti_sracok](https://github.com/oliviaisarobot/rss_visualizer/master/preview/2020-05-18_pesti_sracok_title.jpg)
 
 The above images are wordclouds generated for 4 Hungarian news sites based on their RSS feeds of 2020-05-18 (hvg.hu, index.hu, origo.hu, pesti_sracok.hu)
 

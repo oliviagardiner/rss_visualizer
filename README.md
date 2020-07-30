@@ -4,12 +4,12 @@
 
 These are simple scripts that you can add to a scheduler daemon (eg. cron) to automatically pull RSS feeds from news sites of your preference. An RSS feed is a list of articles that are structured in a specific way, using a markup language called XML. Why are we downloading all these summaries? This repository allows you to statistically analyze these feeds and also lets you create word cloud visualizations for specific days to compare the news coverage of different media outlets.
 
-![hvg](https://github.com/oliviaisarobot/rss_visualizer/blob/master/preview/2020-05-18_hvg_title.jpg =200x200)
-![index](https://github.com/oliviaisarobot/rss_visualizer/blob/master/preview/2020-05-18_index_title.jpg =200x200)
-![origo](https://github.com/oliviaisarobot/rss_visualizer/blob/master/preview/2020-05-18_origo_title.jpg =200x200)
-![pesti_sracok](https://github.com/oliviaisarobot/rss_visualizer/blob/master/preview/2020-05-18_pesti_sracok_title.jpg =200x200)
+<img src="https://github.com/oliviaisarobot/rss_visualizer/blob/master/preview/2020-05-18_hvg_title.jpg" width="250" height="250">
+<img src="https://github.com/oliviaisarobot/rss_visualizer/blob/master/preview/2020-05-18_index_title.jpg" width="250" height="250">
+<img src="https://github.com/oliviaisarobot/rss_visualizer/blob/master/preview/2020-05-18_origo_title.jpg" width="250" height="250">
+<img src="https://github.com/oliviaisarobot/rss_visualizer/blob/master/preview/2020-05-18_pesti_sracok_title.jpg" width="250" height="250">
 
-The above images are wordclouds generated for 4 Hungarian news sites based on their RSS feeds of 2020-05-18 (hvg.hu, index.hu, origo.hu, pesti_sracok.hu)
+The above images are wordclouds generated for 4 Hungarian news sites based on their RSS feeds of 2020-05-18, using article titles (hvg.hu, index.hu, origo.hu, pesti_sracok.hu)
 
 You can install this script on your own server and study the RSS feeds of your choice. Be aware that this script generates roughly 1-3Mb of data per RSS feed every day (assuming the server is running continously all day).
 

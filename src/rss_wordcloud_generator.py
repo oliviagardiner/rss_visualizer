@@ -39,7 +39,7 @@ class RssWordcloudGenerator(RssProcessor):
         return set(sw_list)
 
     def create_wordcloud(self, tag, key, color = 'inferno'):
-        """If there is text to process, this method creates a wordcloud and saves it to a .jpg.
+        """If there is text to process, this method creates a wordcloud and saves it to a .png.
         """
         txt = self.get_text_by_tag(tag, key, allow_duplicates = self.allow_duplicates)
 
@@ -49,7 +49,7 @@ class RssWordcloudGenerator(RssProcessor):
             else:
                 stopwords = set(STOPWORDS)
             
-            pathname = os.path.abspath(os.path.join(self.wordcloud_filepath, self.today + '_' + key + '_' + tag + '.jpg'))
+            pathname = os.path.abspath(os.path.join(self.wordcloud_filepath, self.today + '_' + key + '_' + tag + '.png'))
 
             try:
                 wordcloud = WordCloud(width = 800, height = 800,

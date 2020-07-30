@@ -1,9 +1,11 @@
+#!/usr/bin/python3
+
 import csv
 import os
 import pandas
 import xml.etree.ElementTree as ET
 from datetime import date
-from src.rss_downloader import RssDownloader
+from .rss_downloader import RssDownloader
 
 ABS_PATH = os.path.dirname(__file__)
 
@@ -53,7 +55,7 @@ class RssCsvParser(RssDownloader):
         """Saves the pandas dataframe to a csv file.
         """
         df.index.name = 'pkey'
-        df = df.drop_duplicates(subset = ['guid']) # debatable
+        df = df.drop_duplicates(subset = ['guid']) # debatable: here we are dopping urls that appear more than once
         df.to_csv(self.csv_filepath, encoding = 'utf-8', sep = ';')
 
     def run(self):

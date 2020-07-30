@@ -1,8 +1,11 @@
+#!/usr/bin/python3
+
 import os
 import urllib.request
-from urllib.error import HTTPError
+import ssl
+from urllib.error import URLError
 from datetime import datetime, date
-from src.rss_processor import RssProcessor
+from .rss_processor import RssProcessor
 
 ABS_PATH = os.path.dirname(__file__)
 
@@ -15,18 +18,19 @@ class RssDownloader(RssProcessor):
         so we make a 2nd attempt if the first try throws a 403 (Forbidden) error code.
         """
         urls = self.get_config()
+        context = ssl._create_unverified_context()
+        header = { 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0' }
 
         for key, val in urls.items():
             try:
-                urllib.request.urlretrieve(val, self.rss_file_path_for(key))
-            except HTTPError as err:
-                if err.code == 403:
-                    try:
-                        opener = urllib.request.URLopener()
-                        opener.addheader('User-Agent', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0')
-                        opener.retrieve(val, self.rss_file_path_for(key))
-                    except HTTPError as err:
-                        self.logger.warning('Error trying to download file from url: [' + val + '] ' + str(err.code) + ': ' + str(err.reason))
+                req = urllib.request.Request(val, headers = header)
+                response = urllib.request.urlopen(req, context=context)
+                if (response.getcode() == 200):
+                    data = response.read()
+                    filepath = open(self.rss_file_path_for(key), 'wb')
+                    filepath.write(data)
                 else:
-                    self.logger.warning('Error trying to download file from url: [' + val + '] ' + str(err.code) + ': ' + str(err.reason))
+                    raise Exception('Error while opening url: ' + val)
+            except URLError as err:
+                self.logger.warning('Error trying to download file from url: [' + val + '] ' + ': ' + str(err.reason))
         self.logger.info('RSS feed download finished, time elapsed: ' + self.get_time_elapsed())

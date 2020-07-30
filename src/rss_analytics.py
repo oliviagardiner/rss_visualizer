@@ -1,10 +1,12 @@
+#!/usr/bin/python3
+
 import csv
 import os
 import pandas
 import xml.etree.ElementTree as ET
 from datetime import date, datetime, timedelta
 from pathlib import Path
-from src.rss_processor import RssProcessor
+from rss_processor import RssProcessor
 
 ABS_PATH = os.path.dirname(__file__)
 

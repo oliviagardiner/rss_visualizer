@@ -1,9 +1,10 @@
+#!/usr/bin/python3
 
 import os
 import random
 from datetime import date
 from wordcloud import WordCloud, STOPWORDS 
-from src.rss_processor import RssProcessor
+from .rss_processor import RssProcessor
 
 ABS_PATH = os.path.dirname(__file__)
 

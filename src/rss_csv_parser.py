@@ -36,14 +36,17 @@ class RssCsvParser(RssDownloader):
             for node in tree.findall('.//' + enclosing_tag):
                 row = {'key': key, 'guid': None, 'pubDate': '', 'title': '', 'description': ''}
                 for child in node.iter():
-                    if child.tag in self.data_keys:
+                    if child.tag in self.data_keys or 'encoded' in child.tag:
+                        tag = child.tag if child.tag in self.data_keys else 'description'
                         value = self.clean_html(child.text) or None
                         if value != None:
                             value = value.strip()
                         if child.tag == 'pubDate':
                             parts = value.split(',')
-                            value = parts[1][:-5].strip()
-                        row[child.tag] = value
+                            date_slice = self.get_config_feed(
+                                row['key'])['date_slice']
+                            value = parts[1][:-date_slice].strip()
+                        row[tag] = value
                 df_row = pd.DataFrame([row.values()], columns = self.data_keys)
                 df = pd.concat([df, df_row], ignore_index = True)
         

@@ -70,7 +70,6 @@ class RssProcessor:
         except ValueError as e:
             self.logger.warning('The config file is NOT a valid json - %s'%(e))
             return False
-        self.logger.info('The config file is a valid json')
         return True
 
     def get_config(self, urls_only = True):

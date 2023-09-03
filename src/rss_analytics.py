@@ -20,22 +20,36 @@ class RssAnalytics(RssProcessor):
         self.last_week = (date.today() - timedelta(days=7)).strftime('%Y-%m-%d')
         self.digest_filepath = self.convert_to_abs_path(
             stat_dirname + '/' + self.last_week + '_' + 'digest.txt')
-    
-    def run(self):
-        data = pd.read_csv(self.csv_filepath, index_col='pkey', sep=';', parse_dates=['pubDate'])
-        # data.info()
-        filter = data.loc[(data['pubDate'] >= self.last_week)]
-        # print(filter)
+        
+    def get_last_week_digest(self):
+        data = pd.read_csv(self.csv_filepath, index_col='pkey',
+                           sep=';', parse_dates=['pubDate'])
+        data.info()
+        filter = data.loc[(data['pubDate'] >= self.last_week)].sort_values('pubDate')
         digest = ''
         for index, row in filter.iterrows():
             settings = self.get_config_feed(row['key'])
             urls = ''
             for key, value in settings['links'].items():
                 urls += '[' + key.capitalize() + '](' + value + ') '
-            digest += row['title'] + '\r\n' + 'Csatorna: ' + settings['name'] + '\r\n' + 'Megjelenik: ' + \
-                settings['published'] + '\r\n' + 'Linkek: ' + urls + \
-                '\r\n' + row['description'] + '\r\n---\r\n'
+            digest += row['title'] + '\r\n' + 'Csatorna: ' + settings['name'] + '\r\n' + 'Megjelenik: ' + str(settings['published']) + '\r\n' + 'Linkek: ' + urls + '\r\n' + str(row['description']) + '\r\n---\r\n'
+            
+        return digest
+    
+    def write_digest_file(self, data):
+        try:
+            file = open(self.digest_filepath, 'x', encoding='utf-8')
+        except FileExistsError as err:
+            file = open(self.digest_filepath, 'w', encoding='utf-8')
 
-        file = open(self.digest_filepath, 'x', encoding='utf-8')
-        file.write(digest)
-        file.close()
+        try:
+            file.write(data)
+            file.close()
+        except IOError as err:
+            self.logger.error(
+                'Error trying to write data to file: [' + self.digest_filepath + '] ' + ': ' + str(err.reason))
+    
+    def run(self):
+        digest = self.get_last_week_digest()
+        self.write_digest_file(digest)
+        self.logger.info('Digest generated: ' + self.digest_filepath)

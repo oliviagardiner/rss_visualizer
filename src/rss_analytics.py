@@ -36,6 +36,26 @@ class RssAnalytics(RssProcessor):
             
         return digest
     
+    def get_last_week_digest_as_markdown(self):
+        data = pd.read_csv(self.csv_filepath, index_col='pkey',
+                           sep=';', parse_dates=['pubDate'])
+        data.info()
+        filter = data.loc[(data['pubDate'] >= self.last_week)
+                          ].sort_values('pubDate')
+        digest = ''
+        for index, row in filter.iterrows():
+            settings = self.get_config_feed(row['key'])
+            urls = ''
+            for key, value in settings['links'].items():
+                urls += '[' + key.capitalize() + '](' + value + ') '
+            title = '### ' + row['title']
+            channel = 'Csatorna: **' + settings['name'] + '**'
+            published = 'Megjelenik: ' + str(settings['published'])
+            links = 'Linkek: ' + urls
+            digest += title + '\r\n' + channel + '\n' + published + '\n' + links + '\r\n' + str(row['description']) + '\r\n---\r\n'
+
+        return digest
+    
     def write_digest_file(self, data):
         try:
             file = open(self.digest_filepath, 'x', encoding='utf-8')
@@ -50,6 +70,6 @@ class RssAnalytics(RssProcessor):
                 'Error trying to write data to file: [' + self.digest_filepath + '] ' + ': ' + str(err.reason))
     
     def run(self):
-        digest = self.get_last_week_digest()
+        digest = self.get_last_week_digest_as_markdown()
         self.write_digest_file(digest)
         self.logger.info('Digest generated: ' + self.digest_filepath)

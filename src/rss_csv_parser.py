@@ -2,7 +2,7 @@
 
 import csv
 import os
-import pandas
+import pandas as pd
 import xml.etree.ElementTree as ET
 from datetime import date
 from .rss_downloader import RssDownloader
@@ -27,7 +27,7 @@ class RssCsvParser(RssDownloader):
         """
         filelist = self.get_file_list(key)
 
-        df = pandas.DataFrame(columns = self.data_keys)
+        df = pd.DataFrame(columns = self.data_keys)
         
         for filename in filelist:
             tree = ET.parse(filename)
@@ -46,8 +46,8 @@ class RssCsvParser(RssDownloader):
                             row[child.tag] = value
                 if row['guid'] is None:
                     row['guid'] = row['link']
-                df_row = pandas.DataFrame([row.values()], columns = self.data_keys)
-                df = df.append(df_row, ignore_index = True)
+                df_row = pd.DataFrame([row.values()], columns = self.data_keys)
+                df = pd.concat([df, df_row], ignore_index = True)
         
         return df
 
@@ -60,9 +60,10 @@ class RssCsvParser(RssDownloader):
 
     def run(self):
         urls = self.get_config()
-        df = pandas.DataFrame(columns = self.data_keys)
+        df = pd.DataFrame(columns = self.data_keys)
         for key in urls.keys():
             df_dataset = self.parse_xml_to_dataframe(key)
-            df = df.append(df_dataset, ignore_index = True)
+            df = pd.concat(
+                [df, df_dataset], ignore_index=True)
         self.save_data_to_csv(df)
         self.logger.info('CSV data parsing finished, time elapsed: %s'%(self.get_time_elapsed()))

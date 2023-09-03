@@ -2,11 +2,11 @@
 
 import csv
 import os
-import pandas
+import pandas as pd
 import xml.etree.ElementTree as ET
 from datetime import date, datetime, timedelta
 from pathlib import Path
-from rss_processor import RssProcessor
+from .rss_processor import RssProcessor
 
 ABS_PATH = os.path.dirname(__file__)
 
@@ -17,8 +17,25 @@ class RssAnalytics(RssProcessor):
 
         self.stat_filepath = self.convert_to_abs_path(stat_dirname, is_dir = True)
         self.csv_filepath = self.convert_to_abs_path(stat_dirname + '/' + self.today + '_' + csv_filename)
+        self.last_week = (date.today() - timedelta(days=7)).strftime('%Y-%m-%d')
+        self.digest_filepath = self.convert_to_abs_path(
+            stat_dirname + '/' + self.last_week + '_' + 'digest.txt')
     
     def run(self):
-        pass
-        # data = pandas.read_csv(self.csv_filepath, index_col = 'pkey', header = 0, sep = ';')
-        # WIP
+        data = pd.read_csv(self.csv_filepath, index_col='pkey', sep=';', parse_dates=['pubDate'])
+        # data.info()
+        filter = data.loc[(data['pubDate'] >= self.last_week)]
+        # print(filter)
+        digest = ''
+        for index, row in filter.iterrows():
+            settings = self.get_config_feed(row['key'])
+            urls = ''
+            for key, value in settings['links'].items():
+                urls += '[' + key.capitalize() + '](' + value + ') '
+            digest += row['title'] + '\r\n' + 'Csatorna: ' + settings['name'] + '\r\n' + 'Megjelenik: ' + \
+                settings['published'] + '\r\n' + 'Linkek: ' + urls + \
+                '\r\n' + row['description'] + '\r\n---\r\n'
+
+        file = open(self.digest_filepath, 'x', encoding='utf-8')
+        file.write(digest)
+        file.close()

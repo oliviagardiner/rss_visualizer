@@ -22,15 +22,18 @@ class RssDownloader(RssProcessor):
         header = { 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0' }
 
         for key, val in urls.items():
-            try:
-                req = urllib.request.Request(val, headers = header)
-                response = urllib.request.urlopen(req, context=context)
-                if (response.getcode() == 200):
-                    data = response.read()
-                    filepath = open(self.rss_file_path_for(key), 'wb')
-                    filepath.write(data)
-                else:
-                    raise Exception('Error while opening url: ' + val)
-            except URLError as err:
-                self.logger.warning('Error trying to download file from url: [' + val + '] ' + ': ' + str(err.reason))
-        self.logger.info('RSS feed download finished, time elapsed: ' + self.get_time_elapsed())
+            if val:
+                try:
+                    req = urllib.request.Request(val, headers = header)
+                    response = urllib.request.urlopen(req, context=context)
+                    if (response.getcode() == 200):
+                        data = response.read()
+                        filepath = open(self.rss_file_path_for(key), 'wb')
+                        filepath.write(data)
+                    else:
+                        raise Exception('Error while opening url: ' + val)
+                except URLError as err:
+                    self.logger.warning('Error trying to download file from url: [' + val + '] ' + ': ' + str(err.reason))
+                self.logger.info('RSS feed download finished, time elapsed: ' + self.get_time_elapsed())
+            else:
+                self.logger.warning('No url was specified for key: ' + key)

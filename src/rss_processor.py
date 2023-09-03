@@ -101,9 +101,21 @@ class RssProcessor:
         mixed
         """
         if self.is_config_valid() is True:
-            with open(self.config_filepath) as json_file:
+            with open(self.config_filepath, encoding='utf-8') as json_file:
                 data = json.load(json_file)
                 return data['settings'][key] or None
+            
+    def get_config_feed(self, key):
+        """Extracts the value of a specific feed from the json config, returns None if not found.
+
+        Returns
+        ---
+        mixed
+        """
+        if self.is_config_valid() is True:
+            with open(self.config_filepath, encoding='utf-8') as json_file:
+                data = json.load(json_file)
+                return data['feeds'][key] or None
 
     def clean_html(self, text):
         """This will remove everything that is enclosed in a html tag. It was handy to clean up the XMLs because some of the RSS feeds I used for testing incorrectly enclosed HTML inside certain XML tags.

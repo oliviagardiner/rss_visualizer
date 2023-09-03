@@ -10,7 +10,7 @@ from .rss_downloader import RssDownloader
 ABS_PATH = os.path.dirname(__file__)
 
 class RssCsvParser(RssDownloader):
-    data_keys = ['key', 'guid', 'pubDate', 'title', 'description', 'category', 'link']
+    data_keys = ['key', 'guid', 'pubDate', 'title', 'description']
 
     def __init__(self, today = date.today().strftime('%Y-%m-%d'), json_filename = 'rss_config.json', download_dirname = 'rss_downloads', abs_path = None, log_dirname = 'rss_logs', logger_name = __name__, stat_dirname = 'rss_statistics', csv_filename = 'data.csv'):
         RssDownloader.__init__(self, today = today, json_filename = json_filename, download_dirname = download_dirname, abs_path = abs_path, log_dirname = log_dirname, logger_name = logger_name)
@@ -34,18 +34,16 @@ class RssCsvParser(RssDownloader):
             enclosing_tag = self.get_config_settings('enclosing_tag_name') if isinstance(self.get_config_settings('enclosing_tag_name'), str) else 'item'
 
             for node in tree.findall('.//' + enclosing_tag):
-                row = {'key': key, 'guid': None, 'pubDate': '', 'title': '', 'description': '', 'category': [], 'link': ''}
+                row = {'key': key, 'guid': None, 'pubDate': '', 'title': '', 'description': ''}
                 for child in node.iter():
                     if child.tag in self.data_keys:
                         value = self.clean_html(child.text) or None
                         if value != None:
                             value = value.strip()
-                        if child.tag == 'category':
-                            row[child.tag].append(value)
-                        else:
-                            row[child.tag] = value
-                if row['guid'] is None:
-                    row['guid'] = row['link']
+                        if child.tag == 'pubDate':
+                            parts = value.split(',')
+                            value = parts[1][:-5].strip()
+                        row[child.tag] = value
                 df_row = pd.DataFrame([row.values()], columns = self.data_keys)
                 df = pd.concat([df, df_row], ignore_index = True)
         

@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
+from src.file_logger import FileLogger
 import unittest
 import sys
 
 sys.path.append('..')
-from src.file_logger import FileLogger
 
 class FileLoggerTest(unittest.TestCase):
     def setUp(self) -> None:

@@ -1,3 +1,5 @@
+cd ../
+
 python -m unittest tests.config_parser_test
 python -m unittest tests.csv_parser_test
 python -m unittest tests.downloader_test

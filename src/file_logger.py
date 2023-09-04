@@ -7,7 +7,7 @@ from io import StringIO
 ABS_PATH = os.path.dirname(__file__)
 
 class FileLogger():
-    GEN_DIR = '../generated/'
+    GEN_DIR = '../generated/logs/'
 
     LEVEL_INFO = 'info'
     LEVEL_WARNING = 'warning'

@@ -10,7 +10,7 @@ sys.path.append('.')
 
 class Downloader():
     def __init__(self) -> None:
-        self.logger = FileLogger('downloader')
+        self.logger = FileLogger('default')
 
     def get_data(self, url: str) -> str:
         context = ssl._create_unverified_context()

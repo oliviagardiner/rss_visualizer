@@ -10,6 +10,10 @@ class FileUtil():
     def __init__(self) -> None:
         load_dotenv()
 
+    def get_abs_path(self, path: str) -> str:
+        return os.path.abspath(os.path.join(
+            self.ABS_PATH, '../' + path))
+
     def get_gen_path(self, subdir: str) -> str:
         if os.getenv('ABS_PATH') == 'true':
             return os.path.join(
@@ -21,3 +25,7 @@ class FileUtil():
         path = self.get_gen_path(subdir)
         Path(path).mkdir(parents = True, exist_ok = True)
         return path
+    
+    def save_to_path(self, data, path: str) -> None:
+        handler = open(path, 'wb')
+        handler.write(data)

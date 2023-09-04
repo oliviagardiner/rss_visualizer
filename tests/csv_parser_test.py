@@ -3,11 +3,13 @@
 from src.csv_parser import CsvParser
 import unittest
 import sys
+from dotenv import load_dotenv
 
 sys.path.append('..')
 
 class CsvParserTest(unittest.TestCase):
     def setUp(self) -> None:
+        load_dotenv('.env.test')
         self.csv_parser = CsvParser('rss_config_sample.json', ['key', 'guid',
                                     'pubDate', 'title', 'description'], 'key')
 
@@ -27,3 +29,7 @@ class CsvParserTest(unittest.TestCase):
         parsed = self.csv_parser.parse_rss_string_to_date(
             'Thu, 31 Aug 2023 07:14:43 GMT', 'UID')
         self.assertEqual('31 Aug 2023 07:14:43', parsed)
+
+    def test_fill_empty_guid_with_unique_value(self) -> None:
+        testrow = {'guid': '', 'foo': 'bar'}
+        self.assertEqual({'guid': 'bar', 'foo': 'bar'}, self.csv_parser.fill_empty_guid_with_unique_value(testrow))

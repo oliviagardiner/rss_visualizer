@@ -43,8 +43,15 @@ class CsvParser():
     
     def parse_rss_string_to_date(self, text: str, key: str) -> str:
         parts = text.split(',')
-        date_slice = self.date_slice_config[key]
+        date_slice = self.date_slice_config[key] or 5
         return parts[1][:-date_slice].strip()
+    
+    def fill_empty_guid_with_unique_value(self, row: dict) -> dict:
+        if row.get(os.getenv('DROP_DUPLICATE'), '') == '':
+            row[os.getenv('DROP_DUPLICATE')
+                ] = row.get(os.getenv('FILL_UNIQUE'))
+            
+        return row
 
     def parse_xml_to_dataframe_for_source(self, key: str) -> pd.DataFrame:
         enclosing_tag = os.getenv('ENCLOSING_TAG')
@@ -62,15 +69,15 @@ class CsvParser():
                     if child.tag in self.data_keys or 'encoded' in child.tag:
                         tag = child.tag if child.tag in self.data_keys else os.getenv('MAP_ENCODED_TO')
 
-                        value = self.clean_html_from_text(child.text) or None
-                        if value != None:
-                            value = value.strip()
+                        value = self.clean_html_from_text(child.text) or ''
+                        value = value.strip()
 
                         if tag == os.getenv('DATE_TAG'):
                             value = self.parse_rss_string_to_date(value, key)
 
                         row[tag] = value
 
+                row = self.fill_empty_guid_with_unique_value(row)
                 df_row = pd.DataFrame([row.values()], columns = self.data_keys)
                 df = pd.concat([df, df_row], ignore_index=True)
         
@@ -84,8 +91,8 @@ class CsvParser():
             df = pd.concat([df, source_dataset], ignore_index=True)
 
         df.index.name = 'pkey'
-        if isinstance(os.getenv('DROP_DUPICATE'), str):
-            df = df.drop_duplicates(subset=[os.getenv('DROP_DUPICATE')])
+        if isinstance(os.getenv('DROP_DUPLICATE'), str):
+            df = df.drop_duplicates(subset=[os.getenv('DROP_DUPLICATE')])
         
         path = self.file_util.make_gen_path(os.getenv('CSV_SUBDIR'))
         filename = datetime.now().strftime('%Y-%m-%d') + '-' + \

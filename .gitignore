@@ -1,4 +1,5 @@
 rss_config.json
+custom.*
 .env
 /__pycache__
 

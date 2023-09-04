@@ -3,16 +3,7 @@
         "UID": {
             "url": "https://sample.com/feed",
             "name": "NAME",
-            "fields": {
-                "title": "TITLE",
-                "category": "CATEGORY",
-                "description": "DESCRIPTION"
-            },
             "date_slice": 4
         }
-    },
-    "settings": {
-        "colormaps": ["viridis", "plasma", "inferno", "magma", "cividis", "summer", "winter", "cool", "copper", "twilight", "rainbow"],
-        "tags": ["title", "description", "category"]
     }
 }

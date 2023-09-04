@@ -25,10 +25,7 @@ The following will be generated:
 These instructions assume you are using Linux. The following python modules have to be installed:
 
 ```
-pip install python-dotenv
-pip install wheel
-pip install pandas
-pip install wordcloud
+py -m pip install -r requirements.txt
 ```
 
 ## Creating the config file

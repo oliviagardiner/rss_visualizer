@@ -1,33 +1,37 @@
 #!/usr/bin/python3
 
+from src.file_util import FileUtil
 import logging
-import os
 from io import StringIO
-
-ABS_PATH = os.path.dirname(__file__)
+from datetime import date
 
 class FileLogger():
-    GEN_DIR = '../generated/logs/'
+    POSTFIX = '_log'
 
     LEVEL_INFO = 'info'
     LEVEL_WARNING = 'warning'
     LEVEL_ERROR = 'error'
 
-    def __init__(self, filename: str = None, is_abs: bool = False) -> None:
+    def __init__(self, filename: str = None) -> None:
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
         formatter = logging.Formatter(
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        
-        if is_abs == True:
-            filename = os.path.join(ABS_PATH, self.GEN_DIR + filename)
-        
 
         if filename:
-            file_handler = logging.FileHandler(filename)
-            file_handler.setFormatter(formatter)
-            self.logger.addHandler(file_handler)
+            self.__configure_file_handler(formatter, filename)
 
+        self.__configure_stream_handler(formatter)
+
+    def __configure_file_handler(self, formatter, filename: str) -> None:
+        fileutil = FileUtil()
+        path = fileutil.make_gen_path('logs')
+        filename = date.today().strftime('%Y-%m-%d') + '-' + filename + self.POSTFIX
+        file_handler = logging.FileHandler(path + '/' + filename)
+        file_handler.setFormatter(formatter)
+        self.logger.addHandler(file_handler)
+
+    def __configure_stream_handler(self, formatter) -> None:
         self.stream = StringIO()
         stream_handler = logging.StreamHandler(self.stream)
         stream_handler.setFormatter(formatter)

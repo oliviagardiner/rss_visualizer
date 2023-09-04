@@ -50,14 +50,15 @@ class WordcloudGenerator():
                 self.logger.log(
                     'Could not generate worldcloud at path: %s' % (imagepath) + ' ' + str(err), self.logger.LEVEL_ERROR)
                 
-    def get_text_from_source(self, field: str, allow_duplicates: bool = False):
+    def get_text_from_source(self, key: str, field: str, allow_duplicates: bool = False):
         txt = [] if allow_duplicates == True else set()
 
         date_tag = str(os.getenv('DATE_TAG'))
         data = pd.read_csv(self.output_generator.get_data_file_path(),
                            index_col='pkey', sep=';', parse_dates=[date_tag])
+        filter = data[data['key'].str.contains(key, case=False)]
 
-        for index, row in data.iterrows():
+        for index, row in filter.iterrows():
             if row.get(field, 'NaN') != 'NaN':
                 value = str(row[field])
                 txt.append(value) if allow_duplicates == True else txt.add(
@@ -72,7 +73,7 @@ class WordcloudGenerator():
         for field in self.cloud_fields:
             color = random.choice(self.colormaps)
             for key in urls.keys():
-                txt = self.get_text_from_source(field)
-                self.create_wordcloud_from_text(txt, color, field)
+                txt = self.get_text_from_source(key, field)
+                self.create_wordcloud_from_text(txt, color, key + '_' + field)
             self.logger.log('Wordcloud generating finished for field : ' + field)
 

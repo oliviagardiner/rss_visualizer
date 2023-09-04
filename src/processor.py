@@ -19,7 +19,7 @@ class Processor():
         
     def get_rss_for_urls(self) -> None:
         file_util = FileUtil()
-        now = datetime.now().strftime('%Y-%m-%d-%H%M%S')
+        now = datetime.now().strftime('%Y-%m-%d')
         downloader = Downloader()
 
         for key, val in self.urls.items():

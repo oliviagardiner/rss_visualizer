@@ -13,8 +13,6 @@
     },
     "settings": {
         "colormaps": ["viridis", "plasma", "inferno", "magma", "cividis", "summer", "winter", "cool", "copper", "twilight", "rainbow"],
-        "enclosing_tag_name": "item",
-        "tags": ["title", "description", "category"],
-        "xml_cleanup": true
+        "tags": ["title", "description", "category"]
     }
 }

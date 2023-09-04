@@ -29,3 +29,12 @@ class FileUtil():
     def save_to_path(self, data, path: str) -> None:
         handler = open(path, 'wb')
         handler.write(data)
+
+    def save_to_path_utf8(self, data, path: str) -> None:
+        try:
+            handler = open(path, 'x', encoding='utf-8')
+        except FileExistsError as err:
+            handler = open(path, 'w', encoding='utf-8')
+        finally:
+            handler.write(data)
+            handler.close()

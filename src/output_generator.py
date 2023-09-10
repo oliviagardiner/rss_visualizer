@@ -5,9 +5,8 @@ from src.config_parser import ConfigParser
 from src.file_util import FileUtil
 import pandas as pd
 from dotenv import load_dotenv
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 import os
-import re
 
 class OutputGenerator():
     def __init__(self, config_path: str, day: str = date.today().strftime('%Y-%m-%d')) -> None:
@@ -17,7 +16,8 @@ class OutputGenerator():
         self.fields = self.__get_fields_list()
         self.day = day
         time_range = os.getenv('TIME_RANGE_DAYS')
-        self.range = (date.today() - timedelta(days=int(time_range))).strftime('%Y-%m-%d')
+        dateobj = datetime.strptime(day, '%Y-%m-%d')
+        self.range = (dateobj - timedelta(days=int(time_range))).strftime('%Y-%m-%d')
         self.config_parser = ConfigParser(config_path)
 
     def __get_fields_list(self) -> list:

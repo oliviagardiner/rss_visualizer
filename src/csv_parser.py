@@ -2,6 +2,7 @@
 
 from src.config_parser import ConfigParser
 from src.file_util import FileUtil
+from src.env_util import EnvUtil
 import glob
 import os
 import re
@@ -11,12 +12,12 @@ import xml.etree.ElementTree as ET
 from dotenv import load_dotenv
 
 class CsvParser():
-    def __init__(self, config_path: str, data_keys: list, uid_key: str) -> None:
+    def __init__(self, config_path: str) -> None:
         load_dotenv()
         self.file_util = FileUtil()
         self.config_parser = ConfigParser(config_path)
-        self.data_keys = data_keys
-        self.uid_key = uid_key
+        self.data_keys = EnvUtil.parse_config_to_list('PARSE_FIELDS')
+        self.uid_key = str(os.getenv('FEED_UID'))
         self.sources = self.config_parser.get_values_by_key('name')
         self.date_slice_config = self.config_parser.get_values_by_key(
             'date_slice')

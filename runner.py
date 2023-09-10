@@ -10,8 +10,7 @@ config = 'rss_config.json'
 dl = Processor(config)
 dl.get_rss_for_urls()
 
-pa = CsvParser(config, ['key', 'guid',
-               'pubDate', 'title', 'description'], 'key')
+pa = CsvParser(config, 'key')
 pa.parse_sources_to_csv()
 
 ge = OutputGenerator(config)

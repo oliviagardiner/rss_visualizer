@@ -3,6 +3,7 @@
 from src.file_logger import FileLogger
 from src.config_parser import ConfigParser
 from src.file_util import FileUtil
+from src.env_util import EnvUtil
 from src.output_generator import OutputGenerator
 from dotenv import load_dotenv
 from wordcloud import WordCloud, STOPWORDS
@@ -18,15 +19,10 @@ class WordcloudGenerator():
         self.file_util = FileUtil()
         self.logger = FileLogger('default')
         self.output_generator = OutputGenerator(config_path)
-        self.colormaps = self.__parse_config_to_list('COLORMAPS')
-        self.cloud_fields = self.__parse_config_to_list('CLOUD_FIELDS')
-        self.custom_stopwords = self.__parse_config_to_list('STOPWORDS') or None
+        self.colormaps = EnvUtil.parse_config_to_list('COLORMAPS')
+        self.cloud_fields = EnvUtil.parse_config_to_list('CLOUD_FIELDS')
+        self.custom_stopwords = EnvUtil.parse_config_to_list('STOPWORDS') or None
         self.wordcloud_subdir = os.getenv('WORDCLOUD_SUBDIR')
-
-    def __parse_config_to_list(self, config: str) -> list:
-        colormap = str(os.getenv(config))
-
-        return colormap.split(',')
     
     def create_wordcloud_from_text(self, txt: str, color: str, postfix: str = ''):
         subdir_name = str(os.getenv('WORDCLOUD_SUBDIR'))

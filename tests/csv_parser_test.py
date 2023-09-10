@@ -10,8 +10,7 @@ sys.path.append('..')
 class CsvParserTest(unittest.TestCase):
     def setUp(self) -> None:
         load_dotenv('.env.test')
-        self.csv_parser = CsvParser('rss_config_sample.json', ['key', 'guid',
-                                    'pubDate', 'title', 'description'], 'key')
+        self.csv_parser = CsvParser('rss_config_sample.json')
 
     def test_create_row_from_key(self) -> None:
         row = self.csv_parser.create_row_from_key('test')

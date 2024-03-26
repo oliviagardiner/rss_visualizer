@@ -2,9 +2,6 @@
 
 from src.file_util import FileUtil
 import unittest
-import sys
-
-sys.path.append('..')
 
 class DownloaderTest(unittest.TestCase):
     def setUp(self) -> None:

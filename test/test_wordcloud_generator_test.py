@@ -2,9 +2,6 @@
 
 from src.wordcloud_generator import WordcloudGenerator
 import unittest
-import sys
-
-sys.path.append('..')
 
 class WordcloudGeneratorTest(unittest.TestCase):
     def setUp(self) -> None:

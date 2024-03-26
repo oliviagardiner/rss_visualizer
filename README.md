@@ -25,7 +25,13 @@ The following will be generated:
 These instructions assume you are using Linux. The following python modules have to be installed:
 
 ```
-py -m pip install -r requirements.txt
+python -m pip install -r requirements.txt 
+```
+
+Run tests:
+
+```
+python -m unittest discover
 ```
 
 ## Creating the config file

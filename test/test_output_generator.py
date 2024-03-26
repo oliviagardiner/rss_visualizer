@@ -1,15 +1,14 @@
 #!/usr/bin/python3
 
+import os
 from src.output_generator import OutputGenerator
 import unittest
-import sys
 from dotenv import load_dotenv
-
-sys.path.append('..')
 
 class CsvParserTest(unittest.TestCase):
     def setUp(self) -> None:
-        load_dotenv('.env.test')
+        os.environ['TEMPLATE'] = 'Title: %%title%%\r\nPublished: %%pubDate%%\r\nDescription: %%description%%'
+        os.environ['TEMPLATE_FIELDS'] = 'title,pubDate,description'
         self.output_generator = OutputGenerator('rss_config_sample.json', '2023-09-04')
 
     def test_get_data_file_path(self) -> None:

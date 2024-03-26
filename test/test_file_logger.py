@@ -2,9 +2,6 @@
 
 from src.file_logger import FileLogger
 import unittest
-import sys
-
-sys.path.append('..')
 
 class FileLoggerTest(unittest.TestCase):
     def setUp(self) -> None:

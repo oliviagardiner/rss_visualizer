@@ -2,9 +2,6 @@
 
 from src.config_parser import ConfigParser
 import unittest
-import sys
-
-sys.path.append('..')
 
 class ConfigParserTest(unittest.TestCase):
     def setUp(self) -> None:

@@ -5,6 +5,7 @@ services:
     build:
       context: .
     env_file: .env
+    restart: always
     volumes:
       - .:/app
-    command: sh -c 'python -m pip install -r requirements.txt --break-system-packages && tail -f /dev/null'
+    command: sh -c 'python -m pip install -r requirements.txt --break-system-packages && cron && tail -f /dev/null'

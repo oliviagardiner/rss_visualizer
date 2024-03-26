@@ -34,6 +34,12 @@ Run tests:
 python -m unittest discover
 ```
 
+Or simply:
+
+```
+docker compose up -d
+```
+
 ## Creating the config file
 
 Define your RSS feeds url in a json file, and name it `rss_config.json`. You can do this easily by editing the `rss_config_sample.json` and renaming it.

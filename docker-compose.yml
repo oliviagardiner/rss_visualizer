@@ -1,0 +1,10 @@
+version: '3'
+services:
+  rss-visualizer:
+    image: rss-visualizer:2.0.1
+    build:
+      context: .
+    env_file: .env
+    volumes:
+      - .:/app
+    command: sh -c 'python3 -m pip install -r requirements.txt --break-system-packages && tail -f /dev/null'

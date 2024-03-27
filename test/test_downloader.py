@@ -13,9 +13,9 @@ class DownloaderTest(unittest.TestCase):
             self.downloader.get_data(url)
             
     def test_get_data_returns_string_if_response_is_200(self) -> None:
-        url = 'http://httpstat.us/200'
+        url = 'https://www.google.com'
         result = self.downloader.get_data(url)
-        self.assertIn('200', str(result))
+        self.assertIn('<title>Google</title>', str(result))
 
 if __name__ == '__main__':
     unittest.main()

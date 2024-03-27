@@ -9,15 +9,13 @@ from datetime import date, timedelta, datetime
 import os
 
 class OutputGenerator():
-    def __init__(self, config_path: str, day: str = date.today().strftime('%Y-%m-%d')) -> None:
+    def __init__(self, config_path: str) -> None:
         load_dotenv()
         self.logger = FileLogger('default')
         self.file_util = FileUtil()
         self.fields = self.__get_fields_list()
-        self.day = day
-        time_range = os.getenv('TIME_RANGE_DAYS')
-        dateobj = datetime.strptime(day, '%Y-%m-%d')
-        self.range = (dateobj - timedelta(days=int(time_range))).strftime('%Y-%m-%d')
+        self.prefix = date.today().strftime('%Y-%m-%d') if os.getenv('OUTPUT_INCLUDE_DAY') == True else os.getenv('OUTPUT_PREFIX')
+    
         self.config_parser = ConfigParser(config_path)
 
     def __get_fields_list(self) -> list:
@@ -25,7 +23,7 @@ class OutputGenerator():
         return fields.split(',')
     
     def get_data_file_path(self) -> str:
-        filename = self.day + '-' + os.getenv('CSV_SUBDIR') + '.csv'
+        filename = self.prefix + os.getenv('CSV_SUBDIR') + '.csv'
         path = self.file_util.get_gen_path(os.getenv('CSV_SUBDIR'))
         return path + '/' + filename
 
@@ -53,7 +51,13 @@ class OutputGenerator():
         date_tag = str(os.getenv('DATE_TAG'))
         data = pd.read_csv(self.get_data_file_path(), index_col='pkey', sep=';', parse_dates=[date_tag])
         data.info()
-        filter = data.loc[(data[date_tag] >= self.range)].sort_values(date_tag)
+        dateobj = date.today()
+        if os.getenv('OUTPUT_INCLUDE_DAY'):
+            time_range_days = os.getenv('TIME_RANGE_DAYS')
+            time_range = (dateobj - timedelta(days=int(time_range_days))).strftime('%Y-%m-%d')
+        else:
+            time_range = dateobj
+        filter = data.loc[(data[date_tag] >= time_range)].sort_values(date_tag)
 
         output = ''
 
@@ -81,7 +85,7 @@ class OutputGenerator():
         output = self.read_data_to_string()
 
         path = self.file_util.make_gen_path(str(os.getenv('OUTPUT_SUBDIR')))
-        filename = self.day + '-output.' + format
+        filename = self.prefix + 'output.' + format
         
         try:
             self.file_util.save_to_path_utf8(output, path + '/' + filename)

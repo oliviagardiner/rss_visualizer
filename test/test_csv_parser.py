@@ -7,6 +7,7 @@ import unittest
 class CsvParserTest(unittest.TestCase):
     def setUp(self) -> None:
         os.environ['PARSE_FIELDS'] = 'key,guid,pubDate,title,description'
+        os.environ['DROP_DUPLICATE'] = 'guid'
         self.csv_parser = CsvParser('rss_config_sample.json')
 
     def test_create_row_from_key(self) -> None:

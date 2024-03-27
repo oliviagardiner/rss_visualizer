@@ -9,10 +9,11 @@ class CsvParserTest(unittest.TestCase):
     def setUp(self) -> None:
         os.environ['TEMPLATE'] = 'Title: %%title%%\r\nPublished: %%pubDate%%\r\nDescription: %%description%%'
         os.environ['TEMPLATE_FIELDS'] = 'title,pubDate,description'
-        self.output_generator = OutputGenerator('rss_config_sample.json', '2023-09-04')
+        os.environ['OUTPUT_INCLUDE_DAY'] = 'true'
+        self.output_generator = OutputGenerator('rss_config_sample.json')
 
     def test_get_data_file_path(self) -> None:
-        self.assertIn('/data/2023-09-04-data.csv', self.output_generator.get_data_file_path())
+        self.assertIn('/data/data.csv', self.output_generator.get_data_file_path())
 
     def test_parse_links(self) -> None:
         links = {

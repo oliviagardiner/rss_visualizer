@@ -10,3 +10,4 @@ custom.*
 /generated
 
 /test/__pycache__
+/test/logs

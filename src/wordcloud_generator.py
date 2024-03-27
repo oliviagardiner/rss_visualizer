@@ -24,7 +24,7 @@ class WordcloudGenerator():
         self.custom_stopwords = EnvUtil.parse_config_to_list('STOPWORDS') or None
         self.wordcloud_subdir = os.getenv('WORDCLOUD_SUBDIR')
     
-    def create_wordcloud_from_text(self, txt: str, color: str, postfix: str = ''):
+    def create_wordcloud_from_text(self, txt: str, color: str, postfix: str = '') -> None:
         subdir_name = str(os.getenv('WORDCLOUD_SUBDIR'))
 
         if (len(txt) > 0):
@@ -40,13 +40,14 @@ class WordcloudGenerator():
                                       background_color=str(os.getenv('WOC_BACKGROUND_COLOR')) or 'white',
                                       colormap=color,
                                       stopwords=stopwords,
+                                      min_word_length=os.getenv('WOC_MIN_WORD_LENGTH'),
                                       min_font_size=10).generate(txt)
                 wordcloud.to_file(imagepath)
             except Exception as err:
                 self.logger.log(
                     'Could not generate worldcloud at path: %s' % (imagepath) + ' ' + str(err), self.logger.LEVEL_ERROR)
                 
-    def get_text_from_source(self, key: str, field: str, allow_duplicates: bool = False):
+    def get_text_from_source(self, key: str, field: str, allow_duplicates: bool = False) -> str:
         txt = [] if allow_duplicates == True else set()
 
         date_tag = str(os.getenv('DATE_TAG'))
@@ -57,8 +58,7 @@ class WordcloudGenerator():
         for index, row in filter.iterrows():
             if row.get(field, 'NaN') != 'NaN':
                 value = str(row[field])
-                txt.append(value) if allow_duplicates == True else txt.add(
-                    value)
+                txt.append(value) if allow_duplicates == True else txt.add(value)
 
         return ' '.join(txt)
 
@@ -68,8 +68,8 @@ class WordcloudGenerator():
 
         for field in self.cloud_fields:
             color = random.choice(self.colormaps)
-            for key in urls.keys():
-                txt = self.get_text_from_source(key, field)
-                self.create_wordcloud_from_text(txt, color, key + '_' + field)
+            for url in urls.keys():
+                txt = self.get_text_from_source(url, field)
+                self.create_wordcloud_from_text(txt, color, url + '_' + field)
             self.logger.log('Wordcloud generating finished for field : ' + field)
 

@@ -40,7 +40,7 @@ class WordcloudGenerator():
                                       background_color=str(os.getenv('WOC_BACKGROUND_COLOR')) or 'white',
                                       colormap=color,
                                       stopwords=stopwords,
-                                      min_word_length=os.getenv('WOC_MIN_WORD_LENGTH'),
+                                      min_word_length=int(os.getenv('WOC_MIN_WORD_LENGTH')),
                                       min_font_size=10).generate(txt)
                 wordcloud.to_file(imagepath)
             except Exception as err:
@@ -69,7 +69,10 @@ class WordcloudGenerator():
         for field in self.cloud_fields:
             color = random.choice(self.colormaps)
             for url in urls.keys():
-                txt = self.get_text_from_source(url, field)
-                self.create_wordcloud_from_text(txt, color, url + '_' + field)
+                try:
+                    txt = self.get_text_from_source(url, field)
+                    self.create_wordcloud_from_text(txt, color, url + '_' + field)
+                except Exception as err:
+                    self.logger.log('Error while generating wordcloud: ' + str(err), self.logger.LEVEL_ERROR)
             self.logger.log('Wordcloud generating finished for field : ' + field)
 

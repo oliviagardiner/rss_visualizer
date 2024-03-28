@@ -14,7 +14,7 @@ class OutputGenerator():
         self.logger = FileLogger('default')
         self.file_util = FileUtil()
         self.fields = self.__get_fields_list()
-        self.prefix = date.today().strftime('%Y-%m-%d') if os.getenv('OUTPUT_INCLUDE_DAY') == True else os.getenv('OUTPUT_PREFIX')
+        self.prefix = date.today().strftime('%Y-%m-%d') + '-' if os.getenv('OUTPUT_INCLUDE_DAY') == 'true' else os.getenv('OUTPUT_PREFIX')
     
         self.config_parser = ConfigParser(config_path)
 

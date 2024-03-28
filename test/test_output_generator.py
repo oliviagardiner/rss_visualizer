@@ -9,7 +9,7 @@ class CsvParserTest(unittest.TestCase):
     def setUp(self) -> None:
         os.environ['TEMPLATE'] = 'Title: %%title%%\r\nPublished: %%pubDate%%\r\nDescription: %%description%%'
         os.environ['TEMPLATE_FIELDS'] = 'title,pubDate,description'
-        os.environ['OUTPUT_INCLUDE_DAY'] = 'true'
+        os.environ['OUTPUT_INCLUDE_DAY'] = 'false'
         self.output_generator = OutputGenerator('rss_config_sample.json')
 
     def test_get_data_file_path(self) -> None:
